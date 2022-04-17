@@ -1,0 +1,6 @@
+main {
+  var int ias;
+  var bool b;
+
+  print (b);
+}
