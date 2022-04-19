@@ -1,0 +1,7 @@
+main{
+var int number;
+number := 100;
+do {
+    number := number - 2;    
+} while (number > 20);
+}
