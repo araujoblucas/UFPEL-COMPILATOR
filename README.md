@@ -1,2 +1,2 @@
-# UFPEL-lugosi-PDC
+# UFPEL-COMPILATOR
 Lugosi compilator for UFPEL Project of Compilers
