@@ -1,6 +1,5 @@
-main {
-  var int ias;
-  var bool b;
-
-  print (b);
+main{
+var int teste;
+teste := 99 - 1232;
+print (teste);
 }

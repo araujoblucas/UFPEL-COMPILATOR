@@ -25,3 +25,8 @@ java Lugosi example2.lug;
 create_whitelines 2
 echo ========= TEST 3 =========
 java Lugosi example3.lug;
+create_whitelines 2
+echo Deleting compiled files
+rm -rf *.java
+rm -rf *.class
+create_whitelines 2
