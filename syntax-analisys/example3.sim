@@ -1,0 +1,51 @@
+main{
+    var int NUM;
+    var bool FLAG;
+
+    NUM := 3;
+    FLAG := false;
+    
+    
+    do {
+        print(FLAG);
+        NUM := (NUM - 1);
+    }while((NUM > 0));
+
+    if((NUM == 0)){
+        FLAG := true;
+        NUM := (NUM - 1);
+    };
+
+    print(NUM);
+    print(FLAG);
+    
+}
+
+function int mult(int X){
+    var int Y;
+
+    return (X * Y);
+}
+
+function int debug(int NUM){
+    var int X;
+    
+    if((NUM > 0)){
+        print(positivo);
+        return 0;
+    };
+    print(negativo);
+    return 1;    
+}
+
+function bool look(bool STATUS){
+    var bool FLAG;
+    FLAG := true;
+
+    if((STATUS == false)){
+        print(STATUS);
+        return STATUS;    
+    };
+
+    return FLAG;
+}
