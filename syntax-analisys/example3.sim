@@ -11,3 +11,10 @@ main {
     return number;   
     
 }
+
+function int whatToDo(int dayOfWeek) {
+    if( ((dayOfWeek == 7) || (dayOfWeek == 1)) ) {
+        return party;
+    };
+    return (work && study);
+}
