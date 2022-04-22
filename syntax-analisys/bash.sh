@@ -7,7 +7,7 @@ done
 }
 
 echo ========= JAVACC =========
-javacc Simple.jj;
+javacc Lugosi.jj;
 
 echo ========= JAVAC =========
 javac *.java;
@@ -17,16 +17,16 @@ create_whitelines 3
 echo ========= INITIATING TESTS =========
 create_whitelines 3
 echo ========= EXAMPLE =========
-java Simple example.sim;
+java Lugosi example.sim;
 create_whitelines 2
 echo ========= TEST 1 =========
-java Simple example1.sim;
+java Lugosi example1.sim;
 create_whitelines 2
 echo ========= TEST 2 =========
-java Simple example2.sim;
+java Lugosi example2.sim;
 create_whitelines 2
 echo ========= TEST 3 =========
-java Simple example3.sim;
+java Lugosi example3.sim;
 create_whitelines 2
 echo Deleting compiled files
 rm -rf *.java
