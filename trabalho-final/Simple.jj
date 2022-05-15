@@ -1,18 +1,64 @@
-PARSER_BEGIN(Simple)
+PARSER_BEGIN(Lugosi)
 import java.io.*;
 import java.util.ArrayList;
 
-class SimpleA{
+public class Lugosi {
+
+  public static void main(String args[]) throws ParseException,IOException {
+
+ Lugosi parser = new Lugosi(new FileInputStream(args[0]));
+ LugosiTree arvore = parser.Lugosi();
+ print(arvore);
+
+  }
+
+  public static void print(LugosiTree arv)
+   {
+
+    System.out.println("main(){");
+    printComandos(arv.comandos);
+    System.out.println("}");
+
+   }
+
+  public static void printComandos(ArrayList<Comando> comandos)
+  {
+     for (Comando c : comandos) {
+           if (c instanceof Print)
+            {
+                System.out.println("print(" + stringExp(((Print)c).exp )+ ");");
+            }
+            else if (c instanceof Atrib) {
+                System.out.println(((Atrib)c).id + " := " + stringExp(((Atrib)c).exp) + ";");
+            }
+            else if (c instanceof Return) {
+                System.out.println("return " + stringExp(((Return)c).exp )+ ";");
+            }
+
+        }
+
+  }
+
+  public static String stringExp(Exp e)
+       {
+          if (e instanceof Num)
+                return (((Num)e).num+"");
+          else return (((Var)e).var);
+
+       }
+
+}
+
+class LugosiTree{
    ArrayList<Comando> comandos;
 
-   SimpleA(ArrayList comandos)
+   LugosiTree(ArrayList comandos)
    {this.comandos=comandos;}
 }
 
 class Comando{}
 
 class Atrib extends Comando{
-
    String id;
    Exp exp;
   
@@ -21,13 +67,17 @@ class Atrib extends Comando{
     this.id=id;
     this.exp=exp;
    }
+}
 
+class Return extends Comando{
+   Exp exp;
 
+   Return(Exp exp)
+   {this.exp = exp;}
 }
 
 
 class Print extends Comando{
-
    Exp exp;
    Print(Exp exp)
    {this.exp = exp;}
@@ -51,51 +101,9 @@ class Var extends Exp{
 }
 
 
-public class Simple {
 
-  public static void main(String args[]) throws ParseException,IOException {
-    
- Simple parser = new Simple(new FileInputStream(args[0]));
- SimpleA arvore = parser.Simple();
- print(arvore);
 
-  }
-
-  public static void print(SimpleA arv)
-   {
-
-    System.out.println("main(){");
-    printComandos(arv.comandos);
-    System.out.println("}");
-
-   }
-
-  public static void printComandos(ArrayList<Comando> comandos)
-  {
-     for (Comando c : comandos) {
-           if (c instanceof Print)
-            {
-              System.out.println("print(" + stringExp(((Print)c).exp )+ ");");
-            }
-            else
-            {
-            System.out.println(((Atrib)c).id + " := " + stringExp(((Atrib)c).exp) + ";");
-            }
-        }
-
-  }
-
-  public static String stringExp(Exp e)
-       {
-          if (e instanceof Num)
-                return (((Num)e).num+"");
-          else return (((Var)e).var);
-
-       }
-
-}
-
-PARSER_END(Simple)
+PARSER_END(Lugosi)
 
 SKIP :
 {
@@ -114,6 +122,7 @@ TOKEN :
 | <FPARENTESES:")">
 | <PRINT: "print">
 | <ATRIB: ":=">
+| <RETURN: "return">
 | <PV: ";">
 }
 
@@ -125,15 +134,15 @@ TOKEN :
 }
 
 
-// SIMPLE -> "main" "{" COMANDOS  "}"
+// Lugosi -> "main" "{" COMANDOS  "}"
 
-SimpleA Simple () :
+LugosiTree Lugosi () :
 {ArrayList comandos= new ArrayList();}
 {
 
 <MAIN> <ACHAVES> Comandos(comandos) <FCHAVES>
 <EOF> 
- {return new SimpleA(comandos);}
+ {return new LugosiTree(comandos);}
 }
 
 
@@ -166,8 +175,10 @@ Comando Com () :
 {Token id=null; Exp e=null; Comando c=null; Comando result=null;}
 {
 
-  ((id=<ID> <ATRIB> e=Exp() {result = new Atrib(id.image,e);}) 
-  | (<PRINT> <APARENTESES> e=Exp() <FPARENTESES> {result = new Print(e);}))
+  
+  (id=<ID> <ATRIB> e=Exp() {result = new Atrib(id.image,e);}
+  | (<RETURN> e = Exp() {result = new Return(e);} )
+  | <PRINT> <APARENTESES> e=Exp() <FPARENTESES> {result = new Print(e);})
   
   {return result;} 
 
@@ -179,7 +190,7 @@ Comando Com () :
 Exp Exp () :
 {Token t = null; Exp result=null;}
 {
-   ( (t=<NUM> {result = new Num(Integer.parseInt(t.image));}) 
+   ( (t=<NUM> {result = new Num(Integer.parseInt(t.image));})
     | (t=<ID>  {result = new Var(t.image);}))
 
     {return result;}

@@ -7,7 +7,7 @@ done
 }
 
 echo ========= JAVACC =========
-javacc Lugosi.jj;
+javacc Simple.jj;
 create_whitelines 3
 
 echo ========= JAVAC =========
