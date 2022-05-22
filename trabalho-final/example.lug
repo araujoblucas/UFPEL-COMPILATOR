@@ -1,7 +1,7 @@
 main{
     var int astra;
     var bool estro;
-	x := 4;
+	x := (4 + 3);
 	y := x;
 	print(x);
 	print(y);

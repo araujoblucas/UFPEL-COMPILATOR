@@ -35,7 +35,7 @@ public class Lugosi {
            } else if ( (v).type instanceof VoidT ) {
                System.out.print(" void ");
            }
-           System.out.println("" + ((Id)v.id).id);
+           System.out.println("" + ((Id)v.id).id + ";");
        }
    }
 
@@ -73,16 +73,43 @@ public class Lugosi {
 
   public static String stringExp(Exp e)
        {
-
-          if (e instanceof ExpOpExp)
-              return "" + ((ExpOpExp) e).exp1 + ((ExpOpExp) e).op + ((ExpOpExp) e).exp2;
-//                return (((Num)e).num+"");
-          else if (e instanceof Fator) {
-              if (e instanceof FatorBool)
-                  return "bool";
-           }
+          String temp = "";
+          if (e instanceof FatorNum) {
+            return ("" + (((FatorNum) e).num).valor);
+          } else if (e instanceof FatorId) {
+            return ("" + (((FatorId) e).id).id);
+          }
+          if (e instanceof ExpOpExp) {
+            temp += "( ";
+            if ((((ExpOpExp) e).exp1) instanceof ExpOpExp) {
+              temp += stringExp((((ExpOpExp) e).exp1));
+            } else if ((((ExpOpExp) e).exp1) instanceof FatorNum) {
+              temp += "" + ((FatorNum)(((ExpOpExp) e).exp1)).num.valor;
+            } else if ((((ExpOpExp) e).exp1) instanceof FatorId) {
+              temp += "" + (((FatorId) e).id).id;
+            }
+            temp += " " + ((ExpOpExp) e).op + " ";
+            if ((((ExpOpExp) e).exp2) instanceof ExpOpExp) {
+              temp += stringExp((((ExpOpExp) e).exp2));
+            } else if ((((ExpOpExp) e).exp2) instanceof FatorNum) {
+              temp += " " + ((FatorNum)(((ExpOpExp) e).exp2)).num.valor;
+            } else if ((((ExpOpExp) e).exp2) instanceof FatorId) {
+              temp += "" + (((FatorId) e).id).id + " ";
+            }
+            return temp + " )";
+        }
             return "a";
        }
+
+   public static String printFator(Fator f) {
+        System.out.println("aqui");
+        return "a";
+//      if(f instanceof FatorId) {
+//          return  "" + (((Id)f.id).id);
+//      } else if (f instanceof FatorNum) {
+//          return "" + (((Num)f.num).valor);
+//      }
+   }
 }
 
 class LugosiTree{
