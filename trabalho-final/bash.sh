@@ -7,7 +7,7 @@ done
 }
 
 echo ========= JAVACC =========
-javacc Simple.jj;
+javacc Lugosi.jj;
 create_whitelines 3
 
 echo ========= JAVAC =========
@@ -19,7 +19,7 @@ create_whitelines 3
 echo ========= INITIATING TESTS =========
 create_whitelines 3
 
-echo ========= EXAMPLE =========
+echo ========= TEST 1 =========
 java Lugosi example.lug;
 create_whitelines 2
 
@@ -27,9 +27,9 @@ create_whitelines 2
 # java Lugosi example1.lug;
 # create_whitelines 2
 
-# echo ========= TEST 2 =========
-# java Lugosi example2.lug;
-# create_whitelines 2
+ echo ========= TEST 2 =========
+ java Lugosi example2.lug;
+ create_whitelines 2
 
 # echo ========= TEST 3 =========
 # java Lugosi example3.lug;
