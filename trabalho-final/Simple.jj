@@ -137,10 +137,11 @@ public class Lugosi {
           String temp = "";
 
           if (e instanceof FatorNum) {
-
             return ("" + (((FatorNum) e).num).valor);
           } else if (e instanceof FatorIdLista) {
               return ("" + (((FatorIdLista) e).id).id);
+          } else if (e instanceof FatorBool) {
+              return ("" + (((FatorBool) e).valor).valor);
           }
           if (e instanceof ExpOpExp) {
             temp += "( ";
@@ -150,6 +151,8 @@ public class Lugosi {
               temp += "" + ((FatorNum)(((ExpOpExp) e).exp1)).num.valor;
             } else if ((((ExpOpExp) e).exp1) instanceof FatorIdLista) {
               temp += ((FatorIdLista)((Fator)((((ExpOpExp) e).exp1)))).id.id;
+            } else if ((((ExpOpExp) e).exp1) instanceof FatorBool) {
+              temp += "" + ((FatorBool)((Fator)((((ExpOpExp) e).exp1)))).valor.valor;
             }
             temp += " " + ((ExpOpExp) e).op + " ";
             if ((((ExpOpExp) e).exp2) instanceof ExpOpExp) {
@@ -157,7 +160,9 @@ public class Lugosi {
             } else if ((((ExpOpExp) e).exp2) instanceof FatorNum) {
               temp += " " + ((FatorNum)(((ExpOpExp) e).exp2)).num.valor;
             } else if ((((ExpOpExp) e).exp2) instanceof FatorIdLista) {
-              temp += ((FatorIdLista)((Fator)((((ExpOpExp) e).exp1)))).id.id;
+              temp += ((FatorIdLista)((Fator)((((ExpOpExp) e).exp2)))).id.id;
+            } else if ((((ExpOpExp) e).exp2) instanceof FatorBool) {
+              temp += "" + ((FatorBool)((Fator)((((ExpOpExp) e).exp2)))).valor.valor;
             }
             return temp + " )";
         }
