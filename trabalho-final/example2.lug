@@ -1,0 +1,26 @@
+main
+{
+    var int n;
+    n := (n - 10);
+    while ( (n > 10) ) do {
+        recursive(a, b, c);
+    };
+    print(a);
+}
+
+function int recursive(int n, int x, void y) {
+    if((n < 2))
+    {
+        return no;
+    };
+
+        return (
+
+                    (na - 1)
+
+               +
+
+                    (ne - 2)
+
+        );
+}
