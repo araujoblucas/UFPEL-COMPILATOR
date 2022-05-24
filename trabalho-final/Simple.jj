@@ -14,13 +14,61 @@ public class Lugosi {
 
   public static void print(LugosiTree arv)
    {
-
-    System.out.println("main(){");
-    printVars(arv.vars);
-    printComandos(arv.comandos);
-    System.out.println("}");
-
+      printMain(arv.main);
+      printFunctions(arv.functions);
    }
+
+   public static void printMain(Main main)
+   {
+      System.out.println("main() {");
+      printVars(main.vars);
+      printComandos(main.comandos);
+      System.out.println("}");
+   }
+
+  public static void printFunctions(ArrayList<Func> functions)
+  {
+      int temp = 0;
+     for (Func f : functions) {
+        System.out.print("function");
+        if ( f.returnType instanceof IntT ) {
+             System.out.print(" int ");
+        } else if ( f.returnType instanceof BoolT ) {
+            System.out.print(" bool ");
+        } else if ( f.returnType instanceof FloatT ) {
+            System.out.print(" float ");
+        } else if ( f.returnType instanceof VoidT ) {
+            System.out.print(" void ");
+        }
+        System.out.print(f.name + "(");
+        printArgs(f.args);
+        System.out.println(" ) {");
+        printVars(f.vars);
+        printComandos(f.comandos);
+        System.out.println("}");
+     }
+  }
+
+  public static void printArgs(ArrayList<Var> vars)
+     {
+         int temp = 0;
+         for (Var v : vars) {
+             temp++;
+             if ((v).type instanceof IntT ) {
+                  System.out.print(" int ");
+             } else if ( (v).type instanceof BoolT ) {
+                 System.out.print(" bool ");
+             } else if ( (v).type instanceof FloatT ) {
+                 System.out.print(" float ");
+             } else if ( (v).type instanceof VoidT ) {
+                 System.out.print(" void ");
+             }
+             System.out.print("" + ((Id)v.id).id);
+             if (temp != vars.size()) {
+                 System.out.print(",");
+             }
+         }
+     }
 
    public static void printVars(ArrayList<Var> vars)
    {
@@ -67,6 +115,19 @@ public class Lugosi {
                 printComandos(((While)c).comandos);
                 System.out.println("}");
             }
+            else if (c instanceof CallFunction) {
+                int temp = 0;
+                System.out.print(((CallFunction) c).id.id + "(");
+                for (Exp arg : ((CallFunction) c).args ) {
+                    temp++;
+                    System.out.print(" " + stringExp(arg));
+                    if (temp != ((CallFunction) c).args.size()) {
+                        System.out.print(",");
+                    }
+                }
+                System.out.print(" )\n");
+
+            }
         }
 
   }
@@ -74,10 +135,12 @@ public class Lugosi {
   public static String stringExp(Exp e)
        {
           String temp = "";
+
           if (e instanceof FatorNum) {
+
             return ("" + (((FatorNum) e).num).valor);
-          } else if (e instanceof FatorId) {
-            return ("" + (((FatorId) e).id).id);
+          } else if (e instanceof FatorIdLista) {
+              return ("" + (((FatorIdLista) e).id).id);
           }
           if (e instanceof ExpOpExp) {
             temp += "( ";
@@ -85,58 +148,81 @@ public class Lugosi {
               temp += stringExp((((ExpOpExp) e).exp1));
             } else if ((((ExpOpExp) e).exp1) instanceof FatorNum) {
               temp += "" + ((FatorNum)(((ExpOpExp) e).exp1)).num.valor;
-            } else if ((((ExpOpExp) e).exp1) instanceof FatorId) {
-              temp += "" + (((FatorId) e).id).id;
+            } else if ((((ExpOpExp) e).exp1) instanceof FatorIdLista) {
+              temp += ((FatorIdLista)((Fator)((((ExpOpExp) e).exp1)))).id.id;
             }
             temp += " " + ((ExpOpExp) e).op + " ";
             if ((((ExpOpExp) e).exp2) instanceof ExpOpExp) {
               temp += stringExp((((ExpOpExp) e).exp2));
             } else if ((((ExpOpExp) e).exp2) instanceof FatorNum) {
               temp += " " + ((FatorNum)(((ExpOpExp) e).exp2)).num.valor;
-            } else if ((((ExpOpExp) e).exp2) instanceof FatorId) {
-              temp += "" + (((FatorId) e).id).id + " ";
+            } else if ((((ExpOpExp) e).exp2) instanceof FatorIdLista) {
+              temp += ((FatorIdLista)((Fator)((((ExpOpExp) e).exp1)))).id.id;
             }
             return temp + " )";
         }
-            return "a";
+          return "AQUI";
        }
-
-   public static String printFator(Fator f) {
-        System.out.println("aqui");
-        return "a";
-//      if(f instanceof FatorId) {
-//          return  "" + (((Id)f.id).id);
-//      } else if (f instanceof FatorNum) {
-//          return "" + (((Num)f.num).valor);
-//      }
-   }
 }
 
 class LugosiTree{
-   ArrayList<Var> vars;
-   ArrayList<Comando> comandos;
+    Main main;
+	ArrayList<Func> functions;
 
-   LugosiTree(ArrayList vars, ArrayList comandos)
+   LugosiTree(Main main, ArrayList<Func> functions)
    {
-       this.vars = vars;
-       this.comandos=comandos;
+		this.main = main;
+		this.functions = new ArrayList(functions);
    }
 }
 
+// ------------------ FUNCTION
+
+class Func {
+
+	Tipo returnType;
+	String name;
+	ArrayList<Var> args;
+	ArrayList<Var> vars;
+	ArrayList<Comando> comandos;
+
+	Func(Tipo returnType, String name, ArrayList<Var> args, ArrayList<Var> vars, ArrayList<Comando> comandos){
+		this.returnType = returnType;
+		this.name = name;
+		this.args = new ArrayList(args);
+		this.vars = new ArrayList(vars);
+		this.comandos = new ArrayList(comandos);
+	}
+}
+
+class Main extends Func {
+	Main(ArrayList<Var> vars, ArrayList<Comando> commands){
+		super(
+			new NoneT(),
+			"main",
+			new ArrayList(),
+			new ArrayList(vars),
+			new ArrayList(commands)
+		);
+	}
+}
+
+// ------------------ TYPES
 class Tipo {}
 
 class IntT extends Tipo {}
 class BoolT extends Tipo {}
 class FloatT extends Tipo {}
 class VoidT extends Tipo {}
+class NoneT extends Tipo {}
 
-
+// ------------------ Comandos
 class Comando{}
 
 class Atrib extends Comando{
    String id;
    Exp exp;
-  
+
    Atrib (String id, Exp exp)
    {
     this.id=id;
@@ -190,6 +276,17 @@ class Print extends Comando{
    {this.exp = exp;}
 }
 
+class CallFunction extends Comando {
+	Id id;
+	ArrayList<Exp> args;
+
+	CallFunction(Id id, ArrayList<Exp> args){
+		this.id = id;
+		this.args = args;
+	}
+}
+
+// ------------------ Exp
 class Exp{}
 
 class ExpOpExp extends Exp {
@@ -320,30 +417,19 @@ TOKEN :
 | <TRUE: "true">
 | <FALSE: "false">
 | <VIRGULA: ",">
+| <FUNC: "function">
 }
 
 TOKEN :
 {
   <ID: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"])*(("_")*( ["a"-"z","A"-"Z","0"-"9"])+)*>
  | <NUM:(["0"-"9"])+ ("."(["0"-"9"])+ )? ("E" ("+" | "-")? (["0"-"9"])+)?>
- | <OP: ( "+" | "-" | "*" | "/" | "&&" | "||" | "<" | ">" | "==")>
+ | <OP: ( "+" | "-" | "*" | "/" | "&&" | "||" | "<" | ">" | "==" | "!=")>
 
 }
 
 
 // Lugosi -> "main" "{" COMANDOS  "}"
-
-LugosiTree Lugosi () :
-{
- ArrayList vars = new ArrayList();
- ArrayList comandos = new ArrayList();
-}
-{
-
-<MAIN> <ACHAVES> varDecl2(vars) Comandos(comandos) <FCHAVES>
-<EOF> 
- {return new LugosiTree(vars, comandos);}
-}
 
 void varDecl2(ArrayList lista_var):
 { Tipo type=null; Id id=null; Token t;}
@@ -356,6 +442,33 @@ ArrayList<Var> varDecl():
 {
 	( <VAR> { type=Tipo(); } t=<ID> { id = new Id(t.image); } <PV> { lista_var.add(new Var(type, id)); } )*
 	{return lista_var;}
+}
+
+//ArrayList<Var> argList():
+//{ ArrayList<Var> lista_args = new ArrayList<Var>(); Tipo type=null; Token t;}
+//{
+//
+//    (
+//        {type = Tipo();} t=<ID> { lista_args.add(new Var(type, new Id(t.image)));}
+//    )
+//
+//    {return lista_args;}
+//}
+
+ArrayList<Var> argList (): {
+	ArrayList<Var> args = new ArrayList<Var>();
+	Var auxArg = null;
+} {
+	auxArg = Arg() {args.add(auxArg);} (<VIRGULA> auxArg = Arg() {args.add(auxArg);})*
+		{return args;}
+}
+
+Var Arg (): {
+	Tipo type;
+	Token t;
+} {
+	{type = Tipo();} t=<ID>
+    { return new Var(type, new Id(t.image)); }
 }
 
 Tipo Tipo():
@@ -402,15 +515,20 @@ ArrayList<Comando> ComandosSeq():
 // COM -> id ":=" EXP | "print" "(" EXP ")"
 
 Comando Com () :
-{Token id=null; Exp e=null; Comando c=null; Comando result=null; ArrayList<Comando> cs;}
+{Token id=null; Exp e=null; Comando c=null; Comando result=null; ArrayList<Comando> cs; ArrayList<Exp> es;}
 {
+    (
+        id=<ID> (
+              (<ATRIB> e=Exp() { result = new Atrib(id.image, e); } )
+            | (<APARENTESES>  es=ListaExp() <FPARENTESES> { result = new CallFunction(new Id(id.image), es); })
+        )
 
-  (id=<ID> <ATRIB> e=Exp() {result = new Atrib(id.image,e);}
-  | (<RETURN> e = Exp() {result = new Return(e);} )
-  | <PRINT> <APARENTESES> e=Exp() <FPARENTESES> {result = new Print(e);}
-  | <IF> <APARENTESES> e=Exp() <FPARENTESES> <ACHAVES> cs=ComandosSeq() <FCHAVES> {result = new If(e, cs);}
-  | <WHILE> <APARENTESES> e=Exp() <FPARENTESES> <DO> <ACHAVES>  cs=ComandosSeq() <FCHAVES> {result = new While(e, cs);}
-  | <DO> <ACHAVES> cs=ComandosSeq() <FCHAVES> <WHILE> <APARENTESES>  e=Exp() <FPARENTESES> {result = new Do(e, cs);})
+        | (<RETURN> e = Exp() {result = new Return(e);} )
+        | <PRINT> <APARENTESES> e=Exp() <FPARENTESES> {result = new Print(e);}
+        | <IF> <APARENTESES> e=Exp() <FPARENTESES> <ACHAVES> cs=ComandosSeq() <FCHAVES> {result = new If(e, cs);}
+        | <WHILE> <APARENTESES> e=Exp() <FPARENTESES> <DO> <ACHAVES>  cs=ComandosSeq() <FCHAVES> {result = new While(e, cs);}
+| <DO> <ACHAVES> cs=ComandosSeq() <FCHAVES> <WHILE> <APARENTESES>  e=Exp() <FPARENTESES> {result = new Do(e, cs);}
+    )
   
   {return result;} 
 
@@ -440,12 +558,49 @@ Fator Fator():
 	{return expF;}
 }
 
-
-
 ArrayList<Exp> ListaExp():
 {ArrayList<Exp> result = new ArrayList<Exp>();}
 {
 	({result.add(Exp());} (<VIRGULA> {result.add(Exp());})*)
 
 	{return result;}
+}
+
+ArrayList<Func> Func():
+{ ArrayList<Func> functions = new ArrayList<Func>(); Tipo returnType; String name;  ArrayList<Var> args; ArrayList<Var> vars; ArrayList<Comando> comandos; Token t; }
+{
+
+	(
+	    <FUNC> {returnType = Tipo();} t=<ID> <APARENTESES> { args = argList(); } <FPARENTESES> <ACHAVES>
+		{vars = varDecl(); comandos = ComandosSeq();}  <FCHAVES> {functions.add(new Func(returnType, t.image, args, vars, comandos));}
+	)*
+
+	{return functions;}
+}
+
+Main Main ():
+{ArrayList<Var> lista_var; ArrayList<Comando> comandos;}
+{
+ <MAIN> <ACHAVES>
+     { lista_var = varDecl(); }
+     { comandos = ComandosSeq(); }
+ <FCHAVES>
+
+ {return (new Main (lista_var, comandos));}
+
+}
+
+LugosiTree Lugosi () :
+{
+ Main main;
+ ArrayList<Func> functions;
+}
+{
+    (main = Main())
+    (functions = Func())
+    <EOF>
+
+    {
+        return new LugosiTree(main, functions);
+    }
 }
