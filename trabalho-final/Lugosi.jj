@@ -305,10 +305,9 @@ class ExpOpExp extends Exp {
 		this.exp2 = exp2;
 	}
 }
-
+// ------------------ Fator
 class Fator extends Exp {}
 
-//Fator = id (lista)
 class FatorIdLista extends Fator {
 	Id id;
 	ArrayList<Exp> exp;
@@ -319,7 +318,6 @@ class FatorIdLista extends Fator {
 	}
 }
 
-//Fator = id
 class FatorId extends Fator {
 	Id id;
 
@@ -336,7 +334,6 @@ class FatorNum extends Fator {
 	}
 }
 
-//Fator = bool
 class FatorBool extends Fator {
 	Bool valor;
 
@@ -345,7 +342,7 @@ class FatorBool extends Fator {
 	}
 }
 
-//ID
+// ------------------ Id
 class Id {
 	String id;
 
@@ -354,7 +351,7 @@ class Id {
 	}
 }
 
-//NUM
+// ------------------ Num
 class Num {
 	String valor;
 
@@ -362,21 +359,25 @@ class Num {
 	{this.valor=valor;}
 }
 
+// ------------------ Bool
 class Bool {
 	String valor;
 	public Bool(String valor){this.valor=valor;}
 }
 
+// ------------------ Float
 class Float {
 	String valor;
 	public Float(String valor){this.valor=valor;}
 }
 
+// ------------------ Void
 class Void {
 	String valor;
 	public Void(String valor){this.valor= "void";}
 }
 
+// ------------------ Var
 class Var {
 	Tipo type;
 	Id id;
